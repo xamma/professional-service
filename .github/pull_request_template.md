@@ -4,5 +4,4 @@
 
 ## Checklist
 
-- [ ] The `README.md` has been updated accordingly.
 - [ ] The CI pipeline passed successfully.

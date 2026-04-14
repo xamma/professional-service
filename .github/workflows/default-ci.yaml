@@ -8,41 +8,37 @@ on:
 
 jobs:
   secret-scan:
-    name: "Secret Scanner (Gitleaks)"
-    runs-on: ubuntu-latest
+    name: "Secret Scanner (TruffleHog)"
+    runs-on: ${{ github.server_url == 'https://github.com' && 'ubuntu-latest' || 'stackit-docker' }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Required to scan the entire commit history
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-      - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: TruffleHog Scan
+        uses: edplato/trufflehog-actions-scan@master
 
   pre-commit-checks:
     name: "Pre-Commit Hooks"
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.server_url == 'https://github.com' && 'ubuntu-latest' || 'stackit-ubuntu-22' }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: "1.21"
+          go-version: "1.26"
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20"
 
