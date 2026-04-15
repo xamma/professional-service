@@ -1,4 +1,4 @@
-# # SKE Observability Log-Alerts
+# SKE Observability Log-Alerts
 
 ## Overview
 

@@ -1,4 +1,4 @@
-# # STACKIT Secrets Manager Vault Provider Integration
+# STACKIT Secrets Manager Vault Provider Integration
 
 ## Overview
 
