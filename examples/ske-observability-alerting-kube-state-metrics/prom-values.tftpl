@@ -1,0 +1,57 @@
+prometheus:
+  enabled: true
+  agentMode: true
+  prometheusSpec:
+    enableRemoteWriteReceiver: true
+    scrapeInterval: 60s
+    evaluationInterval: 60s
+    replicas: 1
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: premium-perf4-stackit
+          accessModes: ['ReadWriteOnce']
+          resources:
+            requests:
+              storage: 80Gi
+    remoteWrite:
+      - url: ${metrics_push_url}
+        queueConfig:
+          batchSendDeadline: '5s'
+          # both values need to be configured according to your observability plan
+          capacity: 30000
+          maxSamplesPerSend: 3000
+          writeRelabelConfigs:
+            - sourceLabels: ['__name__']
+              regex: 'apiserver_.*|etcd_.*|prober_.*|storage_.*|workqueue_(work|queue)_duration_seconds_bucket|kube_pod_tolerations|kubelet_.*|kubernetes_feature_enabled|instance_scrape_target_status'
+              action: 'drop'
+            - sourceLabels: ['namespace']
+              regex: 'example'
+              action: 'keep'
+        basicAuth:
+          username:
+            key: username
+            name: ${secret_name}
+          password:
+            key: password
+            name: ${secret_name}
+
+grafana:
+  enabled: false
+
+defaultRules:
+  create: false
+
+alertmanager:
+  enabled: false
+
+nodeExporter:
+  enabled: true
+
+kube-state-metrics:
+  enabled: true
+  customResourceState:
+    enabled: true
+  collectors:
+    - deployments
+    - pods
