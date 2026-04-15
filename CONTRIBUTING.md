@@ -58,7 +58,7 @@ To keep our codebase clean and secure, we enforce a strict CI pipeline on all Pu
 // limitations under the License.
 ```
 
-- **Scan for Secrets:** Never commit credentials. We use `gitleaks` in the CI pipeline. Ensure you have no hardcoded tokens or passwords in your code.
+- **Scan for Secrets:** Never commit credentials. We use `trufflehog` in the CI pipeline. Ensure you have no hardcoded tokens or passwords in your code.
 
 ### Repository structure
 
