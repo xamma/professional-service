@@ -1,0 +1,60 @@
+# Copyright 2026 Schwarz Digits Cloud GmbH & Co. KG
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+provider "stackit" {
+  default_region           = "eu01"
+  service_account_key_path = ""
+}
+
+resource "stackit_secretsmanager_instance" "example" {
+  project_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  name       = "example-instance"
+}
+
+resource "stackit_secretsmanager_user" "example" {
+  project_id    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  instance_id   = stackit_secretsmanager_instance.example.instance_id
+  description   = "Example user"
+  write_enabled = true
+}
+
+provider "vault" {
+  address          = "https://prod.sm.eu01.stackit.cloud"
+  skip_child_token = true
+
+  auth_login_userpass {
+    username = stackit_secretsmanager_user.example.username
+    password = stackit_secretsmanager_user.example.password
+  }
+}
+
+resource "stackit_observability_instance" "example" {
+  project_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  name       = "example-instance"
+  plan_name  = "Observability-Monitoring-Medium-EU01"
+}
+
+resource "vault_kv_secret_v2" "example" {
+  mount               = stackit_secretsmanager_instance.example.instance_id
+  name                = "my-secret"
+  cas                 = 1
+  delete_all_versions = true
+
+  data_json = jsonencode(
+    {
+      grafana_password = stackit_observability_instance.example.grafana_initial_admin_password,
+      other_secret     = "your-other-secret-value"
+    }
+  )
+}

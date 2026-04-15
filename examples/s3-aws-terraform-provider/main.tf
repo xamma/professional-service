@@ -1,0 +1,77 @@
+# Copyright 2026 Schwarz Digits Cloud GmbH & Co. KG
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+terraform {
+  required_providers {
+    stackit = {
+      source  = "stackitcloud/stackit"
+      version = "> 0.90"
+    }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+variable "project_id" {
+  description = "The STACKIT Project ID where the Object Storage will be created"
+  type        = string
+}
+
+provider "stackit" {
+  default_region           = "eu01"
+  service_account_key_path = ""
+}
+
+resource "stackit_objectstorage_bucket" "example" {
+  project_id = var.project_id
+  name       = "my-stackit-s3-bucket"
+}
+
+resource "stackit_objectstorage_credentials_group" "example" {
+  project_id = var.project_id
+  name       = "my-credentials-group"
+}
+
+resource "stackit_objectstorage_credential" "example" {
+  project_id           = var.project_id
+  credentials_group_id = stackit_objectstorage_credentials_group.example.credentials_group_id
+}
+
+provider "aws" {
+  region     = "eu01"
+  access_key = stackit_objectstorage_credential.example.access_key
+  secret_key = stackit_objectstorage_credential.example.secret_key
+
+  # These flags are mandatory when connecting to a custom S3-compatible backend
+  skip_credentials_validation = true
+  skip_region_validation      = true
+  skip_requesting_account_id  = true
+  skip_metadata_api_check     = true
+  s3_use_path_style           = true
+
+  # STACKIT S3 Endpoint
+  endpoints {
+    s3 = "https://object.storage.eu01.onstackit.cloud"
+  }
+}
+
+resource "aws_s3_object" "example_file" {
+  depends_on = [stackit_objectstorage_bucket.example]
+
+  bucket  = stackit_objectstorage_bucket.example.name
+  key     = "hello-world.txt"
+  content = "Hello from STACKIT Object Storage managed via the AWS Terraform Provider!"
+}
