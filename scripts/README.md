@@ -251,7 +251,7 @@ export SOURCE_SM_PASSWORD='<your-source-password>'
 
 # 2) Migrate from an LDAP source (will prompt for password)
 export SOURCE_AUTH_METHOD="ldap"
-export SOURCE_LDAP_USERNAME="kopps"
+export SOURCE_LDAP_USERNAME="myuser"
 ./vault-migrate.sh
 
 # 3) Migrate only selected paths, skipping ones that already exist
