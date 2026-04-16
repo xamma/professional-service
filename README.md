@@ -39,3 +39,4 @@ Whenever you are starting a new project, looking for a specific implementation, 
 Did you find a script that is broken because of a recent update? Did you build a new, awesome example that could help your colleagues?
 
 Since this is a best-effort repository, we highly encourage you to open a Pull Request and share your fixes or additions! We all benefit from a growing, shared knowledge base. Please refer to our `CONTRIBUTING.md` for guidelines on how to format your code before submitting.
+Because this repository is maintained on a best-effort basis, discussions and reviews may take some time. However, we strive to respond within 7 business days.
