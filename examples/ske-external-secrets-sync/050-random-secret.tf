@@ -29,6 +29,7 @@ resource "vault_kv_secret_v2" "random_secret" {
       admin = ephemeral.random_password.this.result
     }
   )
+  data_json_wo_version = 1
 
   depends_on = [stackit_secretsmanager_user.user]
 }
