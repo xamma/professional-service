@@ -22,6 +22,12 @@ Let's be upfront about how this repository is maintained:
 - **No Guarantees on Freshness:** We try our best to keep the examples, Terraform modules, and scripts up to date with the latest provider releases and API changes. However, **we cannot guarantee it**. Things move fast in the cloud, and some examples might become outdated over time.
 - **Use Your Brain:** Do not blindly copy-paste code from here directly into a production environment.
 
+## Contents
+
+- [`examples/`](./examples) — Example solutions across a variety of STACKIT products.
+- [`scripts/`](./scripts/README.md) — Helper scripts for working with STACKIT services.
+- [`modules/`](./modules) — Ready-made Terraform modules to simplify your deployments.
+
 ## How to Use This Repository
 
 Please treat this repository as a **developer playground and a resource library** to get working examples.
