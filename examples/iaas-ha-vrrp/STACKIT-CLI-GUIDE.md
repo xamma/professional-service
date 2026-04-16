@@ -97,7 +97,7 @@ stackit server create \
   --boot-volume-source-id 03e19c6a-d73a-4ba9-96af-4bd03cf905d3 \ # Debian 12 image ID
   --keypair-name <sshKeyPair> \
   --availability-zone eu01-1 \
-  --machine-type c1.2 \
+  --machine-type c2i.4 \
   --name <serverName> \
   --network-interface-ids $NICID
 ```

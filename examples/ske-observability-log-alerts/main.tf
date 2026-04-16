@@ -40,7 +40,7 @@ resource "stackit_ske_cluster" "example" {
   node_pools = [
     {
       name               = "standard"
-      machine_type       = "c1.4"
+      machine_type       = "c2i.4"
       minimum            = "3"
       maximum            = "9"
       max_surge          = "3"

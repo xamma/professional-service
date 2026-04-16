@@ -22,7 +22,7 @@ resource "stackit_server" "example01" {
     performance_class     = "storage_premium_perf6"
     delete_on_termination = true
   }
-  machine_type       = "c1.4"
+  machine_type       = "c2i.4"
   availability_zone  = "eu01-1"
   user_data          = local.user_data_master
   keypair_name       = stackit_key_pair.admin_keypair.name
