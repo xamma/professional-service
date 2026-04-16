@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# 1. Check for required dependencies
+for cmd in stackit yq; do
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "Error: Required command '$cmd' is not installed or not in your PATH." >&2
+    echo "Please install it before running this script." >&2
+    exit 1
+  fi
+done
+
 # Set to 1 to only print the volumes that would be deleted (no actual deletion)
 DRY_RUN=0
 
