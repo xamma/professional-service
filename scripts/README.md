@@ -6,12 +6,37 @@ Helper scripts for working with STACKIT services.
 
 ## Overview
 
-| Script                                                                             | Purpose                                                                                                     | Required tools                     |
-| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| [`create-kubeconfig-multiple-projects.sh`](#create-kubeconfig-multiple-projectssh) | Generate kubeconfig entries for every SKE cluster across one or more STACKIT projects.                      | `stackit`, `yq`                    |
-| [`delete-unused-volumes.sh`](#delete-unused-volumessh)                             | Delete all STACKIT volumes whose status is `AVAILABLE` (i.e. not attached).                                 | `stackit`, `yq`                    |
-| [`ske-show-versions.sh`](#ske-show-versionssh)                                     | Print overview of SKE cluster Kubernetes versions and nodepool image versions, marking deprecated versions. | `stackit` (>= 0.59.0), `jq`, `awk` |
-| [`smctl.sh`](#smctlsh)                                                             | Unified CLI wrapper around HashiCorp Vault for the STACKIT Secret Manager (KV v2).                          | `vault`, `jq`                      |
+| Script                                                                             | Purpose                                                                                                        | Required tools                     |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| [`check-stackit-ip.sh`](#check-stackit-ipsh)                                       | Check whether a given IP address belongs to STACKIT's public IP ranges.                                        | `stackit`, `jq`, `grepcidr`        |
+| [`create-kubeconfig-multiple-projects.sh`](#create-kubeconfig-multiple-projectssh) | Generate kubeconfig entries for every SKE cluster across one or more STACKIT projects.                         | `stackit`, `yq`                    |
+| [`delete-unused-volumes.sh`](#delete-unused-volumessh)                             | Delete all STACKIT volumes whose status is `AVAILABLE` (i.e. not attached).                                    | `stackit`, `yq`                    |
+| [`list-project-resources.sh`](#list-project-resourcessh)                           | Render a Markdown inventory of resources (DNS, SKE, databases, storage, …) for one or more STACKIT projects.   | `stackit`, `jq`                    |
+| [`ske-show-versions.sh`](#ske-show-versionssh)                                     | Print overview of SKE cluster Kubernetes versions and nodepool image versions, marking deprecated versions.    | `stackit` (>= 0.59.0), `jq`, `awk` |
+| [`smctl.sh`](#smctlsh)                                                             | Unified CLI wrapper around HashiCorp Vault for the STACKIT Secret Manager (KV v2), think `kubectl` for secrets | `vault`, `jq`                      |
+| [`vault-migrate.sh`](#vault-migratesh)                                             | Migrate secrets between two Vault instances using the KV v2 API (supports userpass and LDAP for source).       | `vault`, `jq`                      |
+
+---
+
+## `check-stackit-ip.sh`
+
+Looks up the STACKIT public IP ranges (via `stackit curl https://iaas.api.eu01.stackit.cloud/v1/networks/public-ip-ranges`) and tells you whether a given IP falls inside any of them. Useful to verify whether a public-facing address actually originates from STACKIT.
+
+Exits `0` if the IP is found, `1` otherwise.
+
+### Example
+
+```bash
+# Check a single IP
+./check-stackit-ip.sh 45.129.40.1
+```
+
+Sample output:
+
+```
+Fetching STACKIT IP ranges...
+Found: 45.129.40.1 is in the range 45.129.40.0/22
+```
 
 ---
 
@@ -78,8 +103,8 @@ Sample output:
 ```
 CLUSTER NAME         SKE VERSION                    NODEPOOL             FLATCAR VERSION                MACHINE TYPE    PROJECT ID
 ------------         -----------                    --------             ---------------                ------------    ----------
-prod-cluster         1.30.4 (supported)             default              4081.2.0 (supported)           c1.4            90bc91eb-...
-legacy-cluster       1.27.9 (exp. 2026-05-01)       default              3815.2.5 (exp. 2026-03-15)     c1.2            be20ca97-...
+prod-cluster         1.30.4 (supported)             default              4081.2.0 (supported)           c1.4            xxxxxxxx-...
+legacy-cluster       1.27.9 (exp. 2026-05-01)       default              3815.2.5 (exp. 2026-03-15)     c1.2            yyyyyyyy-...
 
 Summary:
 Total clusters: 2
@@ -89,7 +114,7 @@ Total clusters: 2
 
 ## `smctl.sh`
 
-Wrapper around the `vault` CLI that targets the STACKIT Secret Manager endpoint (`https://prod.sm.eu01.stackit.cloud`) and authenticates with userpass.
+Wrapper around the `vault` CLI to works with secrets in STACKIT Secrets Manager, think about it as `kubectl` but for secrets.
 
 ### Required environment variables
 
@@ -138,4 +163,98 @@ eval "$(./smctl.sh get postgresql all-export)"
 
 # Write a value from a file (e.g. a full .env)
 ./smctl.sh put terraform secret-env < .env
+```
+
+---
+
+## `list-project-resources.sh`
+
+Iterates over the listable STACKIT services (DNS, Git, Load Balancers, SKE etc.) and prints a Markdown report containing one section per project with a table per resource type. Intended to be redirected into a `.md` file.
+
+Project IDs are passed as arguments — at least one is required.
+
+### Example
+
+```bash
+# Single project
+./list-project-resources.sh xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx > project-inventory.md
+
+# Multiple projects in one report
+./list-project-resources.sh \
+  xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx \
+  yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy \
+  > inventory.md
+```
+
+Sample output (excerpt):
+
+```markdown
+## Project: my-prod-project (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+
+**SKE Clusters:**
+|name|status|...|
+|---|---|---|
+|prod-cluster|HEALTHY|...|
+
+**Public IPs:**
+N/A
+
+last update: Thu, 16-Apr-2026 14:42:11 CEST
+```
+
+---
+
+## `vault-migrate.sh`
+
+Migrates secrets between two KV v2-compatible secret backends, typically from a HashiCorp Vault instance into STACKIT Secrets Manager, or from one STACKIT Secrets Manager instance to another (both expose the Vault KV v2 API). Source authentication can be `userpass` or `ldap` (LDAP triggers an interactive password prompt); the target always uses `userpass`. Recursively walks all paths under the source mount unless `MIGRATE_PATHS` is set.
+
+### Flags
+
+- `-d, --dry-run` — show what would be migrated without writing.
+- `-v, --verbose` — verbose progress output.
+- `-s, --skip-existing` — skip secrets that already exist in the target.
+- `--debug` — debug output (implies `--verbose`).
+- `-h, --help` — show usage.
+
+### Required environment variables
+
+| Variable               | Description                                                       |
+| ---------------------- | ----------------------------------------------------------------- |
+| `SOURCE_VAULT_ADDR`    | Source Vault address (e.g. `https://vault.example.com`).          |
+| `SOURCE_SM_ID`         | Source KV mount path.                                             |
+| `SOURCE_AUTH_METHOD`   | `userpass` (default) or `ldap`.                                   |
+| `SOURCE_SM_USERNAME`   | Source username — required when `SOURCE_AUTH_METHOD=userpass`.    |
+| `SOURCE_SM_PASSWORD`   | Source password — required when `SOURCE_AUTH_METHOD=userpass`.    |
+| `SOURCE_LDAP_USERNAME` | LDAP username — required when `SOURCE_AUTH_METHOD=ldap`.          |
+| `TARGET_VAULT_ADDR`    | Target Vault address.                                             |
+| `TARGET_SM_USERNAME`   | Target Vault username (always userpass).                          |
+| `TARGET_SM_PASSWORD`   | Target Vault password.                                            |
+| `TARGET_SM_ID`         | Target KV mount path.                                             |
+| `MIGRATE_PATHS`        | Optional space-separated list of paths to migrate (default: all). |
+
+### Examples
+
+```bash
+# Common target setup
+export TARGET_VAULT_ADDR="https://prod.sm.eu01.stackit.cloud"
+export TARGET_SM_USERNAME="target-user"
+export TARGET_SM_PASSWORD='<your-target-password>'
+export TARGET_SM_ID="sm-target-xxxx"
+
+# 1) Dry run — migrate everything from a userpass source
+export SOURCE_VAULT_ADDR="https://old.vault.example.com"
+export SOURCE_SM_ID="sm-source-xxxx"
+export SOURCE_AUTH_METHOD="userpass"
+export SOURCE_SM_USERNAME="source-user"
+export SOURCE_SM_PASSWORD='<your-source-password>'
+./vault-migrate.sh --dry-run --verbose
+
+# 2) Migrate from an LDAP source (will prompt for password)
+export SOURCE_AUTH_METHOD="ldap"
+export SOURCE_LDAP_USERNAME="kopps"
+./vault-migrate.sh
+
+# 3) Migrate only selected paths, skipping ones that already exist
+export MIGRATE_PATHS="postgresql redis terraform"
+./vault-migrate.sh --skip-existing --verbose
 ```
