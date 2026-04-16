@@ -92,12 +92,12 @@ Examples:
 
   # Migrate using LDAP for source authentication (will prompt for password)
   $ export SOURCE_AUTH_METHOD="ldap"
-  $ export SOURCE_LDAP_USERNAME="kopps"
+  $ export SOURCE_LDAP_USERNAME="myuser"
   $ vault-migrate.sh --dry-run --verbose
 
   # Migrate specific paths only with LDAP
   $ export SOURCE_AUTH_METHOD="ldap"
-  $ export SOURCE_LDAP_USERNAME="kopps"
+  $ export SOURCE_LDAP_USERNAME="myuser"
   $ export MIGRATE_PATHS="postgresql redis"
   $ vault-migrate.sh
 
