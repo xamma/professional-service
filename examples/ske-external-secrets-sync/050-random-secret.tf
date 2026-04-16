@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-resource "random_password" "this" {
+ephemeral "random_password" "this" {
   length           = 16
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
@@ -26,7 +26,7 @@ resource "vault_kv_secret_v2" "random_secret" {
   delete_all_versions = true
   data_json = jsonencode(
     {
-      admin = random_password.this.result
+      admin = ephemeral.random_password.this.result
     }
   )
 
