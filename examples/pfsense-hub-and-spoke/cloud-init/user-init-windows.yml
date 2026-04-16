@@ -1,0 +1,12 @@
+#cloud-config
+# ---------------------------------------------------------------------------
+# Example cloud-init for Windows Server instances.
+# Creates a local administrator account.
+#
+# IMPORTANT: Replace the username and password below with your own values
+# before deploying. Never use shared or well-known default credentials.
+# ---------------------------------------------------------------------------
+users:
+  - name: admin-user
+    groups: administrators
+    passwd: "<replace-with-your-secure-password>"

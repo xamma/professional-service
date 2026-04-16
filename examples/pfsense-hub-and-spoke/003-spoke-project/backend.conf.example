@@ -1,0 +1,11 @@
+# Copy this file to backend.conf and fill in your STACKIT Object Storage credentials.
+# backend.conf is gitignored and must never be committed to version control.
+#
+# Usage: terraform init -backend-config=backend.conf
+#
+# Create an Object Storage bucket in the STACKIT portal and generate
+# S3-compatible access credentials under "Object Storage > Credentials".
+
+bucket     = "<your-state-bucket-name>"
+access_key = "<your-access-key-id>"
+secret_key = "<your-secret-access-key>"

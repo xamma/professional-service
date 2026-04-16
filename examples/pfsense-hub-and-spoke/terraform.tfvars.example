@@ -1,0 +1,56 @@
+# ---------------------------------------------------------------------------
+# terraform.tfvars.example
+#
+# Copy this file into a project directory (e.g. 001-hub-project/terraform.tfvars)
+# and fill in your values. Do NOT commit terraform.tfvars to version control.
+#
+# Alternatively, export variables as environment variables:
+#   export TF_VAR_stackit_organization_id="<uuid>"
+# ---------------------------------------------------------------------------
+
+# --- STACKIT Identity --------------------------------------------------------
+
+# Your STACKIT Organization ID.
+# Portal: Organization > Settings > Organization ID
+stackit_organization_id = "<your-stackit-organization-id>"
+
+# Folder that will contain the STACKIT project(s).
+# Portal: Resource Manager > Folders
+stackit_folder_id = "<your-stackit-folder-id>"
+
+# Network Area ID — created by 001-hub-project on first apply.
+# For spoke projects: run `terraform output network_area_id` in 001-hub-project.
+# Not needed for 001-hub-project itself.
+# stackit_network_area_id = "<output-of-hub-project>"
+
+# Email address of the STACKIT user set as project owner.
+org_admin = "<admin@example.com>"
+
+# --- Service Account ---------------------------------------------------------
+
+# Path to the STACKIT service account key file.
+# Download: STACKIT portal > Service Accounts > Keys > Create key
+stackit_service_account_key_path = "./keys/service-account.json"
+
+# --- Region ------------------------------------------------------------------
+
+stackit_region = "eu01"
+default_zone   = "eu01-1"
+
+# --- Hub: network access control (001-hub-project only) ----------------------
+
+# CIDR allowed to reach the pfSense management interface (SSH, HTTP, HTTPS).
+# Example: your office public IP or VPN exit in /32 or /24 notation.
+# Leave empty (or remove) to create no management access rules.
+# mgmt_ip_range = "<x.x.x.x/x>"
+
+# --- Spoke: networking (002 and 003 spoke projects) --------------------------
+
+# Subnet for this spoke. Must be within the network area range (10.28.0.0/16).
+# 002-spoke-project default: 10.28.1.0/28
+# 003-spoke-project default: 10.28.2.0/28
+# spoke_subnet = "10.28.1.0/28"
+
+# LAN IP of the pfSense firewall — used as the default route next-hop for spoke traffic.
+# Run `terraform output firewall_lan_ip` in 001-hub-project.
+# hub_firewall_lan_ip = "10.28.0.20"
