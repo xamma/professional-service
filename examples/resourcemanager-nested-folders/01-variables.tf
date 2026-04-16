@@ -24,7 +24,7 @@ variable "stackit_service_account_key_path" {
 
 variable "stackit_org_id" {
   type    = string
-  default = "03a34540-3c1a-4794-b2c6-7111ecf824ef"
+  default = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }
 
 variable "owner_email" {

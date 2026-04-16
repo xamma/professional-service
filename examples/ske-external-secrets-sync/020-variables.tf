@@ -14,7 +14,7 @@
 
 variable "stackit_project_id" {
   type    = string
-  default = "d75e6aab-b616-4b42-ae3b-aaf161ad626d"
+  default = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }
 
 variable "stackit_region" {

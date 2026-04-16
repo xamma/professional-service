@@ -29,5 +29,5 @@ variable "zone" {
 variable "STACKIT_PROJECT_ID" {
   type        = string
   description = "STACKIT Project ID"
-  default     = "16ec118f-90d0-466d-8393-99eea504c536"
+  default     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }

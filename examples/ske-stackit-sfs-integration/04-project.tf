@@ -22,7 +22,7 @@ resource "stackit_resourcemanager_project" "sfs-no-folder" {
 }
 
 resource "stackit_resourcemanager_project" "sfs-folder" {
-  parent_container_id = "bc229fa8-4be4-42d5-8808-514fe6d39074" #Folder ID Demos
+  parent_container_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" #Folder ID Demos
   name                = "sfs-example-folder"
   labels = {
     "networkArea" = stackit_network_area.sfs.network_area_id

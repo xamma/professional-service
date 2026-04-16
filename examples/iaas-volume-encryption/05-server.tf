@@ -33,7 +33,7 @@ resource "stackit_network_interface" "nic" {
 
 data "stackit_security_group" "default" {
   project_id        = var.STACKIT_PROJECT_ID
-  security_group_id = "a6b4708e-b8ee-48ba-b084-a4892e9a73af"
+  security_group_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }
 
 data "stackit_network" "default" {
