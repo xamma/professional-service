@@ -1,0 +1,157 @@
+# Copyright 2026 Schwarz Digits Cloud GmbH & Co. KG
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+terraform {
+  required_providers {
+    stackit = {
+      source  = "stackitcloud/stackit"
+      version = ">=0.60.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">=2.14.0"
+    }
+  }
+}
+
+variable "project_id" {
+  default = "xxx"
+}
+
+variable "stackit_service_account_key_path" {
+  default = ""
+}
+
+provider "kubernetes" {
+  host                   = yamldecode(stackit_ske_kubeconfig.this.kube_config).clusters.0.cluster.server
+  client_certificate     = base64decode(yamldecode(stackit_ske_kubeconfig.this.kube_config).users.0.user.client-certificate-data)
+  client_key             = base64decode(yamldecode(stackit_ske_kubeconfig.this.kube_config).users.0.user.client-key-data)
+  cluster_ca_certificate = base64decode(yamldecode(stackit_ske_kubeconfig.this.kube_config).clusters.0.cluster.certificate-authority-data)
+}
+
+provider "helm" {
+  kubernetes = {
+    host                   = yamldecode(stackit_ske_kubeconfig.this.kube_config).clusters.0.cluster.server
+    client_certificate     = base64decode(yamldecode(stackit_ske_kubeconfig.this.kube_config).users.0.user.client-certificate-data)
+    client_key             = base64decode(yamldecode(stackit_ske_kubeconfig.this.kube_config).users.0.user.client-key-data)
+    cluster_ca_certificate = base64decode(yamldecode(stackit_ske_kubeconfig.this.kube_config).clusters.0.cluster.certificate-authority-data)
+  }
+}
+
+provider "stackit" {
+  default_region           = "eu01"
+  service_account_key_path = var.stackit_service_account_key_path
+}
+
+resource "stackit_ske_kubeconfig" "this" {
+  project_id   = var.project_id
+  cluster_name = stackit_ske_cluster.this.name
+  refresh      = true
+
+  depends_on = [stackit_ske_cluster.this]
+}
+
+data "stackit_ske_kubernetes_versions" "this" {
+  version_state = "SUPPORTED"
+}
+
+data "stackit_ske_machine_image_versions" "this" {
+  version_state = "SUPPORTED"
+}
+
+locals {
+  flatcar_supported_version = one(flatten([
+    for mi in data.stackit_ske_machine_image_versions.this.machine_images : [
+      for v in mi.versions :
+      v.version
+      if mi.name == "flatcar"
+    ]
+  ]))
+  ubuntu_supported_version = one(flatten([
+    for mi in data.stackit_ske_machine_image_versions.this.machine_images : [
+      for v in mi.versions :
+      v.version
+      if mi.name == "ubuntu"
+    ]
+  ]))
+  gpu_operator_helm_values = templatefile("${path.module}/gpu-operator-values.yaml.tftpl", {})
+}
+
+resource "stackit_ske_cluster" "this" {
+  project_id             = var.project_id
+  name                   = "ske-gpu"
+  kubernetes_version_min = data.stackit_ske_kubernetes_versions.this.kubernetes_versions.0.version
+
+  maintenance = {
+    enable_kubernetes_version_updates    = true
+    enable_machine_image_version_updates = true
+    start                                = "01:00:00Z"
+    end                                  = "02:00:00Z"
+  }
+
+  node_pools = [
+    {
+      name               = "standard"
+      machine_type       = "g2i.4"
+      minimum            = "3"
+      maximum            = "9"
+      max_surge          = "3"
+      availability_zones = ["eu01-1", "eu01-2", "eu01-3"]
+      os_version_min     = local.flatcar_supported_version
+      os_name            = "flatcar"
+      volume_size        = 150
+      volume_type        = "storage_premium_perf6"
+    },
+    {
+      name               = "gpu-pool-h100-2"
+      machine_type       = "n3.14d.g1"
+      os_version_min     = local.ubuntu_supported_version
+      os_name            = "ubuntu"
+      minimum            = "1"
+      maximum            = "1"
+      max_surge          = "1"
+      availability_zones = ["eu01-2"]
+      volume_size        = 150
+      volume_type        = "storage_premium_perf6"
+      labels = {
+        "dedicated" = "gpu"
+      }
+      taints = [
+        {
+          effect = "NoSchedule"
+          key    = "nvidia.com/gpu"
+          value  = "true"
+        },
+      ]
+    },
+  ]
+}
+
+resource "kubernetes_namespace_v1" "gpu_operator" {
+  metadata {
+    name = "gpu-operator"
+  }
+}
+
+resource "helm_release" "gpu_operator" {
+  name       = "gpu-operator"
+  namespace  = kubernetes_namespace_v1.gpu_operator.metadata[0].name
+  repository = "https://helm.ngc.nvidia.com/nvidia"
+  chart      = "gpu-operator"
+  version    = "25.3.1"
+
+  values = [
+    local.gpu_operator_helm_values
+  ]
+}

@@ -1,0 +1,10 @@
+dcgm:
+  enabled: true
+
+dcgmExporter:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      # this label needs to be set for prometheus to use the service monitor
+      release: kube-prometheus-stack
