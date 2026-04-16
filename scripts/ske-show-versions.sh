@@ -17,10 +17,10 @@ if ! command -v stackit &> /dev/null; then
 fi
 
 # Check if stackit-cli is supported
-stackit -v |awk -v maj="$STACKIT_CLI_MIN_MAJOR" -v min="$STACKIT_CLI_MIN_MINOR" -v pat="$STACKIT_CLI_MIN_PATCH" '/Version:/ { { split($2, a, "."); 
-current_maj = a[1]; 
-current_min = a[2]; 
-current_pat = a[3]; 
+stackit -v |awk -v maj="$STACKIT_CLI_MIN_MAJOR" -v min="$STACKIT_CLI_MIN_MINOR" -v pat="$STACKIT_CLI_MIN_PATCH" '/Version:/ { { split($2, a, ".");
+current_maj = a[1];
+current_min = a[2];
+current_pat = a[3];
 if (current_maj > maj || (current_maj == maj && current_min > min) || (current_maj == maj && current_min == min && current_pat >= pat)) {
     print "✅ Version supported (" current_maj "." current_min "." current_pat ")";
         exit 0;

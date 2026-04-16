@@ -24,7 +24,9 @@ Let's be upfront about how this repository is maintained:
 
 ## Contents
 
-- [`scripts/`](./scripts/README.md) — helper scripts for working with STACKIT services. 
+- [`examples/`](./examples) — Example solutions across a variety of STACKIT products.
+- [`scripts/`](./scripts/README.md) — Helper scripts for working with STACKIT services.
+- [`modules/`](./modules) — Ready-made Terraform modules to simplify your deployments.
 
 ## How to Use This Repository
 

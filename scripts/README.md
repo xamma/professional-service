@@ -6,12 +6,12 @@ Helper scripts for working with STACKIT services.
 
 ## Overview
 
-| Script | Purpose | Required tools |
-|--------|---------|----------------|
-| [`create-kubeconfig-multiple-projects.sh`](#create-kubeconfig-multiple-projectssh) | Generate kubeconfig entries for every SKE cluster across one or more STACKIT projects. | `stackit`, `yq` |
-| [`delete-unused-volumes.sh`](#delete-unused-volumessh) | Delete all STACKIT volumes whose status is `AVAILABLE` (i.e. not attached). | `stackit`, `yq` |
-| [`ske-show-versions.sh`](#ske-show-versionssh) | Print overview of SKE cluster Kubernetes versions and nodepool image versions, marking deprecated versions. | `stackit` (>= 0.59.0), `jq`, `awk` |
-| [`smctl.sh`](#smctlsh) | Unified CLI wrapper around HashiCorp Vault for the STACKIT Secret Manager (KV v2). | `vault`, `jq` |
+| Script                                                                             | Purpose                                                                                                     | Required tools                     |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| [`create-kubeconfig-multiple-projects.sh`](#create-kubeconfig-multiple-projectssh) | Generate kubeconfig entries for every SKE cluster across one or more STACKIT projects.                      | `stackit`, `yq`                    |
+| [`delete-unused-volumes.sh`](#delete-unused-volumessh)                             | Delete all STACKIT volumes whose status is `AVAILABLE` (i.e. not attached).                                 | `stackit`, `yq`                    |
+| [`ske-show-versions.sh`](#ske-show-versionssh)                                     | Print overview of SKE cluster Kubernetes versions and nodepool image versions, marking deprecated versions. | `stackit` (>= 0.59.0), `jq`, `awk` |
+| [`smctl.sh`](#smctlsh)                                                             | Unified CLI wrapper around HashiCorp Vault for the STACKIT Secret Manager (KV v2).                          | `vault`, `jq`                      |
 
 ---
 
@@ -93,23 +93,23 @@ Wrapper around the `vault` CLI that targets the STACKIT Secret Manager endpoint 
 
 ### Required environment variables
 
-| Variable | Description |
-|----------|-------------|
-| `SM_USERNAME` | STACKIT Secret Manager username |
-| `SM_PASSWORD` | STACKIT Secret Manager password |
+| Variable      | Description                                                    |
+| ------------- | -------------------------------------------------------------- |
+| `SM_USERNAME` | STACKIT Secret Manager username                                |
+| `SM_PASSWORD` | STACKIT Secret Manager password                                |
 | `SM_ID`       | KV secrets engine mount path (your secret manager instance ID) |
 
 ### Commands
 
-| Command | Description |
-|---------|-------------|
-| `get <vault_path> <key>` | Print the value of a single key. |
-| `get <vault_path> all` | Print all keys as `key: value`. |
-| `get <vault_path> all-export` | Print all keys as `export key=value` (suitable for `eval`/`source`). |
+| Command                          | Description                                                                                         |
+| -------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `get <vault_path> <key>`         | Print the value of a single key.                                                                    |
+| `get <vault_path> all`           | Print all keys as `key: value`.                                                                     |
+| `get <vault_path> all-export`    | Print all keys as `export key=value` (suitable for `eval`/`source`).                                |
 | `put <vault_path> <key> [value]` | Write/update a key. Reads from stdin if no value is given. Existing keys at the path are preserved. |
-| `list` | List all secret paths under the mount. |
-| `list <vault_path>` | List all keys at a specific path. |
-| `help` | Show usage. |
+| `list`                           | List all secret paths under the mount.                                                              |
+| `list <vault_path>`              | List all keys at a specific path.                                                                   |
+| `help`                           | Show usage.                                                                                         |
 
 ### Examples
 
