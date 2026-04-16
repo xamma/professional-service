@@ -16,7 +16,7 @@ Your contribution is welcome! Thank you for your interest in growing our shared 
 
 ### Pre-Commit Checks & CI
 
-To keep our codebase clean and secure, we enforce a strict CI pipeline on all Pull Requests. You can save time by running these checks locally before you commit:
+To maintain a clean and secure codebase, we enforce a strict CI pipeline on all Pull Requests. You can save time and catch pipeline failures early by running these checks locally before you commit your code. We use pre-commit to automate this process.
 
 - **Format your code:** The pipeline will fail if your code is not formatted according to industry standards.
   - Terraform: `terraform fmt -recursive`
