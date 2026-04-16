@@ -24,7 +24,7 @@ resource "vault_kv_secret_v2" "random_secret" {
   name                = "random-secret"
   cas                 = 1
   delete_all_versions = true
-  data_json = jsonencode(
+  data_json_wo = jsonencode(
     {
       admin = ephemeral.random_password.this.result
     }
