@@ -41,11 +41,11 @@ variable "LOCAL_SUBNET" {
 variable "STACKIT_PROJECT_ID" {
   type        = string
   description = "STACKIT Project ID"
-  default     = "16ec118f-90d0-466d-8393-99eea504c536"
+  default     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }
 
 variable "STACKIT_ORG_ID" {
   type        = string
   description = "STACKIT Org ID"
-  default     = "03a34540-3c1a-4794-b2c6-7111ecf824ef"
+  default     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }

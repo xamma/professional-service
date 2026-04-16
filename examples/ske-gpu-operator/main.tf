@@ -26,7 +26,7 @@ terraform {
 }
 
 variable "project_id" {
-  default = "xxx"
+  default = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }
 
 variable "stackit_service_account_key_path" {
