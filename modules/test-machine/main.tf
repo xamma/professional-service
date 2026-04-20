@@ -12,14 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-terraform {
-  required_providers {
-    stackit = {
-      source = "stackitcloud/stackit"
-    }
-  }
-}
-
 resource "stackit_volume" "boot_volume" {
   project_id        = var.project_id
   name              = "${var.name}-volume"
