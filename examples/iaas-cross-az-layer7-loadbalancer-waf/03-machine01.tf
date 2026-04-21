@@ -12,16 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module "test-machine02" {
+module "test-machine01" {
   source = "../../modules/test-machine"
 
   project_id        = var.stackit_project_id
   network_id        = stackit_network.network.network_id
-  availability_zone = "eu01-2"
+  availability_zone = "eu01-1"
+  security_enabled  = true
 
-  name         = "machine02"
+  name         = "machine01"
   machine_type = var.jumphost_flavor
-  disk_size    = 500
+  disk_size    = 48
 
   user_data = templatefile("${path.module}/apache-debug-user.yaml", {})
 }

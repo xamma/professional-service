@@ -1,0 +1,22 @@
+#cloud-config
+users:
+  - name: debug
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    lock_passwd: false
+    passwd: "$6$JZBVJ2zsw/o4C1UJ$FskGQWf.nqwj.o9bHbxkSGvSilQcHt03KdPYlgsiE3L77tNqFj0/vnlCXSf.SRb4jR2xsHk/.OlEyT16Txj4J." # hashed version of 'House123!'
+
+chpasswd:
+  expire: false
+
+ssh_pwauth: true
+
+packages:
+  - apache2
+
+runcmd:
+  - systemctl enable apache2
+  - systemctl start apache2
+  - echo "<h1>Hello from STACKIT Instance</h1><p>Hostname $(hostname)</p>" > /var/www/html/index.html
+  - chown www-data:www-data /var/www/html/index.html
