@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module "test-machine01" {
-  source = "../../modules/test-machine"
-
-  project_id        = var.stackit_project_id
-  network_id        = stackit_network.network.network_id
-  availability_zone = "eu01-1"
-
-  name         = "machine01"
-  machine_type = var.jumphost_flavor
-  disk_size    = 500
-
-  user_data = templatefile("${path.module}/apache-debug-user.yaml", {})
+resource "stackit_network" "network" {
+  project_id       = var.stackit_project_id
+  name             = "network01"
+  ipv4_nameservers = ["1.1.1.1", "9.9.9.9"]
+  ipv4_prefix      = "172.17.1.0/24"
 }
