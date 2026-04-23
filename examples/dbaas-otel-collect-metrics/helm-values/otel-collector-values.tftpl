@@ -1,0 +1,79 @@
+fullnameOverride: otel-collector
+mode: deployment
+
+podAnnotations:
+  stackit-sa-key-id: "${sa_key_id}"
+
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
+config:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: stackit-postgres
+            metrics_path: /v2/projects/$${STACKIT_PROJECT_ID}/regions/$${STACKIT_REGION}/instances/$${STACKIT_POSTGRES_INSTANCE_ID}/metrics
+            oauth2:
+              audience: $${SA_TOKEN_REQUEST_AUDIENCE}
+              client_certificate_key_file: /mnt/secrets-store/private-key
+              client_certificate_key_id: $${SA_TOKEN_REQUEST_CLIENT_CERTIFICATE_KEY_ID}
+              client_id: $${SA_TOKEN_REQUEST_CLIENT_ID}
+              grant_type: urn:ietf:params:oauth:grant-type:jwt-bearer
+              iss: $${SA_TOKEN_REQUEST_ISSUER}
+              signature_algorithm: RS512
+              token_url: https://service-account.api.stackit.cloud/token
+            scheme: https
+            scrape_interval: 1m
+            static_configs:
+              - targets:
+                  - postgres-prom-proxy.api.stackit.cloud:443
+  exporters:
+    debug:
+      verbosity: normal
+    prometheusremotewrite:
+      endpoint: $${OBSERVABILITY_METRICS_ENDPOINT}
+      headers:
+        Authorization: $${OBSERVABILITY_AUTHORIZATION_HEADER}
+
+  service:
+    pipelines:
+      metrics:
+        receivers: [prometheus]
+        exporters: [prometheusremotewrite, debug]
+
+extraEnvs:
+  - name: STACKIT_PROJECT_ID
+    value: "${stackit_project_id}"
+  - name: STACKIT_REGION
+    value: "${stackit_region}"
+  - name: STACKIT_POSTGRES_INSTANCE_ID
+    value: "${stackit_postgres_instance_id}"
+  - name: OBSERVABILITY_METRICS_ENDPOINT
+    value: "${observability_metrics_endpoint}"
+  - name: OBSERVABILITY_AUTHORIZATION_HEADER
+    valueFrom:
+      secretKeyRef:
+        name: ${secret_name}
+        key: OBSERVABILITY_AUTHORIZATION_HEADER
+  - name: SA_TOKEN_REQUEST_CLIENT_ID
+    value: "${sa_client_id}"
+  - name: SA_TOKEN_REQUEST_ISSUER
+    value: "${sa_issuer}"
+  - name: SA_TOKEN_REQUEST_CLIENT_CERTIFICATE_KEY_ID
+    value: "${sa_key_id}"
+  - name: SA_TOKEN_REQUEST_AUDIENCE
+    value: "https://service-account.api.stackit.cloud/token"
+
+extraVolumes:
+  - name: otel-secrets
+    secret:
+      secretName: ${secret_name}
+      items:
+        - key: PRIVATE_KEY
+          path: private-key
+
+extraVolumeMounts:
+  - name: otel-secrets
+    mountPath: /mnt/secrets-store
+    readOnly: true
