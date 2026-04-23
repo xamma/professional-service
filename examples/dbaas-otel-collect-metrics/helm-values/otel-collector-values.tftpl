@@ -1,6 +1,9 @@
 fullnameOverride: otel-collector
 mode: deployment
 
+podAnnotations:
+  stackit-sa-key-id: "${sa_key_id}"
+
 image:
   repository: "otel/opentelemetry-collector-contrib"
 
