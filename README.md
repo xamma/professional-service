@@ -1,6 +1,6 @@
-# STACKIT Professional Services
+# STACKIT PS Solutions
 
-Welcome to the central repository for STACKIT Professional Services examples, scripts, and boilerplate code!
+Welcome to the central repository for STACKIT examples, scripts, and boilerplate code!
 
 > **⚠️ REPOSITORY MIRROR NOTICE**
 >
