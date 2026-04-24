@@ -1,4 +1,4 @@
-name: "Professional Services CI"
+name: "Default CI"
 
 on:
   push:

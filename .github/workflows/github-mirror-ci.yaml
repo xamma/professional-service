@@ -28,11 +28,11 @@ jobs:
       - name: Push to Public Repo
         run: |
           echo "Setting up remote..."
-          git config --global user.name "prof-service-sync-bot"
-          git config --global user.email "prof-service-sync-bot@digits.schwarz"
+          git config --global user.name "ps-sync-bot"
+          git config --global user.email "ps-sync-bot@digits.schwarz"
 
           # Add the GitHub remote using the SSH protocol
-          git remote add public git@github.com:stackitcloud/professional-services.git
+          git remote add public git@github.com:stackitcloud/stackit-ps-solutions.git
 
           echo "Pushing main branch to GitHub..."
           git push public main --force
