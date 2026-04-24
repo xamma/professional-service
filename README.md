@@ -6,7 +6,7 @@ Welcome to the central repository for STACKIT examples, scripts, and boilerplate
 >
 > This GitHub repository is a **mirror**.
 > The primary, internal source of truth for this codebase lives at:
-> `https://professional-service.git.onstackit.cloud/professional-service-best-practices/professional-services`
+> `https://professional-service.git.onstackit.cloud/professional-service-best-practices/stackit-ps-solutions`
 >
 > We automatically sync changes from our STACKIT managed GIT instance to this public GitHub repository.
 >
