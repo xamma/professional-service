@@ -8,7 +8,7 @@
 # default password in production.
 #
 # Generate a SHA-512 hash on Linux/macOS:
-#   python3 -c "import crypt; print(crypt.crypt('YourPassword', crypt.mksalt(crypt.METHOD_SHA512)))"
+#   openssl passwd -6 "YourPassword"
 # ---------------------------------------------------------------------------
 users:
   - name: admin-user
