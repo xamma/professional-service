@@ -32,7 +32,7 @@ jobs:
           git config --global user.email "ps-sync-bot@digits.schwarz"
 
           # Add the GitHub remote using the SSH protocol
-          git remote add public git@github.com:stackitcloud/stackit-ps-solutions.git
+          git remote add public git@github.com:stackitcloud/professional-service.git
 
           echo "Pushing main branch to GitHub..."
           git push public main --force

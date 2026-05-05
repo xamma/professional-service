@@ -1,6 +1,6 @@
-# Project Governance: STACKIT PS Solutions
+# Project Governance: STACKIT Professional Service
 
-This document defines the management, ownership, and maintenance processes for the STACKIT PS Solutions repository.
+This document defines the management, ownership, and maintenance processes for the STACKIT Professional Service repository.
 
 ## 1. Strategy & "The Story"
 
