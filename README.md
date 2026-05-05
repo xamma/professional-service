@@ -20,7 +20,7 @@ Let's be upfront about how this repository is maintained:
 
 - **Strictly Best Effort:** Everything you find in this repository is provided on a "best effort" basis.
 - **No Guarantees on Freshness:** We try our best to keep the examples, Terraform modules, and scripts up to date with the latest provider releases and API changes. However, **we cannot guarantee it**. Things move fast in the cloud, and some examples might become outdated over time.
-- **Use Your Brain:** Do not blindly copy-paste code from here directly into a production environment.
+- **Review Before Deploying:** Do not blindly copy-paste code from here directly into a production environment.
 
 ## Contents
 
