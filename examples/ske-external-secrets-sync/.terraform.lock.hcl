@@ -5,6 +5,7 @@ provider "registry.terraform.io/hashicorp/helm" {
   version     = "2.17.0"
   constraints = "2.17.0"
   hashes = [
+    "h1:K5FEjxvDnxb1JF1kG1xr8J3pNGxoaR3Z0IBG9Csm/Is=",
     "h1:kQMkcPVvHOguOqnxoEU2sm1ND9vCHiT8TvZ2x6v/Rsw=",
     "zh:06fb4e9932f0afc1904d2279e6e99353c2ddac0d765305ce90519af410706bd4",
     "zh:104eccfc781fc868da3c7fec4385ad14ed183eb985c96331a1a937ac79c2d1a7",
@@ -26,6 +27,7 @@ provider "registry.terraform.io/hashicorp/kubernetes" {
   constraints = ">= 2.25.2"
   hashes = [
     "h1:P0c8knzZnouTNFIRij8IS7+pqd0OKaFDYX0j4GRsiqo=",
+    "h1:vyHdH0p6bf9xp1NPePObAJkXTJb/I09FQQmmevTzZe0=",
     "zh:02d55b0b2238fd17ffa12d5464593864e80f402b90b31f6e1bd02249b9727281",
     "zh:20b93a51bfeed82682b3c12f09bac3031f5bdb4977c47c97a042e4df4fb2f9ba",
     "zh:6e14486ecfaee38c09ccf33d4fdaf791409f90795c1b66e026c226fad8bc03c7",
@@ -45,6 +47,7 @@ provider "registry.terraform.io/hashicorp/random" {
   version     = "3.7.2"
   constraints = "3.7.2"
   hashes = [
+    "h1:356j/3XnXEKr9nyicLUufzoF4Yr6hRy481KIxRVpK0c=",
     "h1:KG4NuIBl1mRWU0KD/BGfCi1YN/j3F7H4YgeeM7iSdNs=",
     "zh:14829603a32e4bc4d05062f059e545a91e27ff033756b48afbae6b3c835f508f",
     "zh:1527fb07d9fea400d70e9e6eb4a2b918d5060d604749b6f1c361518e7da546dc",
@@ -64,6 +67,7 @@ provider "registry.terraform.io/hashicorp/random" {
 provider "registry.terraform.io/hashicorp/vault" {
   version = "5.8.0"
   hashes = [
+    "h1:eSJgYoJoVMce2xjJJCeAZnJELsC4RoqaotD0fgfn6dw=",
     "h1:gk1cR+x1D+TEz05MKWmpp0p06+Trob5cN0eYU1vZGJs=",
     "zh:18e79b42c8c155a5c541a45d54a6ccdeab23c404c239acdeed336a17cbfc2fd4",
     "zh:241f50d1ea40030578034b4440e41676f1c9b5e8a2be5cd3afdb6e387914e0bf",
@@ -84,6 +88,7 @@ provider "registry.terraform.io/stackitcloud/stackit" {
   version     = "0.90.0"
   constraints = ">= 0.66.0"
   hashes = [
+    "h1:QgP6TOtucJ3A6fA51rdUvxhYGjl9RrWvXQZpjHTOuiU=",
     "h1:W29Kv6XUxYssF2Gy8KcmTx3EFstt6k8sKgPRIBbq+qs=",
     "zh:003af58a84884558bbb2fc40fcbefa6774ec20aa9e4b97cf3f950190a600afd2",
     "zh:026ee9cef4670cf33369f8654c6b9b1d8c0e116ceb0b353c882be222951ecdd4",

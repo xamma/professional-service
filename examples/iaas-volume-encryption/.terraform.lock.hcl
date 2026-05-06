@@ -5,6 +5,7 @@ provider "registry.terraform.io/stackitcloud/stackit" {
   version     = "0.80.0"
   constraints = "0.80.0"
   hashes = [
+    "h1:VqmLlSV9sMOX7aq5Bnsj18KNKCUPFahZzf0SA5fTkVk=",
     "h1:wz7uGwzVoo1NO18CDLcfjLraTSiWQ5EzJnDeCKcFi60=",
     "zh:0dde99e7b343fa01f8eefc378171fb8621bedb20f59157d6cc8e3d46c738105f",
     "zh:3a0e6cb125ef76a24b2b5ff9c786c57058f385571d283bd68f633225fcca695a",

@@ -12,11 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-provider "stackit" {
-  default_region           = "eu01"
-  service_account_key_path = ""
-}
-
 resource "stackit_secretsmanager_instance" "example" {
   project_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
   name       = "example-instance"
@@ -27,16 +22,6 @@ resource "stackit_secretsmanager_user" "example" {
   instance_id   = stackit_secretsmanager_instance.example.instance_id
   description   = "Example user"
   write_enabled = true
-}
-
-provider "vault" {
-  address          = "https://prod.sm.eu01.stackit.cloud"
-  skip_child_token = true
-
-  auth_login_userpass {
-    username = stackit_secretsmanager_user.example.username
-    password = stackit_secretsmanager_user.example.password
-  }
 }
 
 resource "stackit_observability_instance" "example" {

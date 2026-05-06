@@ -5,6 +5,7 @@ provider "registry.terraform.io/hashicorp/random" {
   version     = "3.8.1"
   constraints = ">= 3.6.3"
   hashes = [
+    "h1:Eexl06+6J+s75uD46+WnZtpJZYRVUMB0AiuPBifK6Jc=",
     "h1:u8AKlWVDTH5r9YLSeswoVEjiY72Rt4/ch7U+61ZDkiQ=",
     "zh:08dd03b918c7b55713026037c5400c48af5b9f468f483463321bd18e17b907b4",
     "zh:0eee654a5542dc1d41920bbf2419032d6f0d5625b03bd81339e5b33394a3e0ae",
@@ -25,6 +26,7 @@ provider "registry.terraform.io/stackitcloud/stackit" {
   version     = "0.90.0"
   constraints = ">= 0.87.0"
   hashes = [
+    "h1:QgP6TOtucJ3A6fA51rdUvxhYGjl9RrWvXQZpjHTOuiU=",
     "h1:W29Kv6XUxYssF2Gy8KcmTx3EFstt6k8sKgPRIBbq+qs=",
     "zh:003af58a84884558bbb2fc40fcbefa6774ec20aa9e4b97cf3f950190a600afd2",
     "zh:026ee9cef4670cf33369f8654c6b9b1d8c0e116ceb0b353c882be222951ecdd4",

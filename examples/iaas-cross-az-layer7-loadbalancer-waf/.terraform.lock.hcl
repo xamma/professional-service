@@ -5,6 +5,7 @@ provider "registry.terraform.io/hashicorp/random" {
   version     = "3.8.1"
   constraints = ">= 3.6.3"
   hashes = [
+    "h1:Eexl06+6J+s75uD46+WnZtpJZYRVUMB0AiuPBifK6Jc=",
     "h1:u8AKlWVDTH5r9YLSeswoVEjiY72Rt4/ch7U+61ZDkiQ=",
     "zh:08dd03b918c7b55713026037c5400c48af5b9f468f483463321bd18e17b907b4",
     "zh:0eee654a5542dc1d41920bbf2419032d6f0d5625b03bd81339e5b33394a3e0ae",
@@ -24,6 +25,7 @@ provider "registry.terraform.io/hashicorp/random" {
 provider "registry.terraform.io/hashicorp/tls" {
   version = "4.2.1"
   hashes = [
+    "h1:F5d6bQY8UlBo0D71Sv7CsV+3aZOFz0yeNF+vufog7h4=",
     "h1:akFNuHwvrtnYMBofieoeXhPJDhYZzJVu/Q/BgZK2fgg=",
     "zh:0d1e7d07ac973b97fa228f46596c800de830820506ee145626f079dd6bbf8d8a",
     "zh:5c7e3d4348cb4861ab812973ef493814a4b224bdd3e9d534a7c8a7c992382b86",
@@ -42,8 +44,9 @@ provider "registry.terraform.io/hashicorp/tls" {
 
 provider "registry.terraform.io/mastercard/restapi" {
   version     = "3.0.0"
-  constraints = "3.0.0"
+  constraints = ">= 3.0.0"
   hashes = [
+    "h1:Fqxoc6bsydl6iWGx6ZvyqUDdGt7Cb4sW/BSHhBeHGgw=",
     "h1:y1I3azDHOqRySTyDHsb3Xh1waP/99KfykZRagbRx1qI=",
     "zh:0b63bd3c25a31f090a41933f90b7dd6e984add1c4261d8f5caa73f4d5aa065a4",
     "zh:1c3e89cf19118fc07d7b04257251fc9897e722c16e0a0df7b07fcd261f8c12e7",
@@ -68,6 +71,7 @@ provider "registry.terraform.io/stackitcloud/stackit" {
   constraints = ">= 0.87.0"
   hashes = [
     "h1:8de9n+Roq6Z2Ltp9poBBBN9a4zSpx73VLpgFS5mTyoI=",
+    "h1:RStdHSDwbtonYfg7mR5Y92v6fxIVX9FEz0UN+tm9kHI=",
     "zh:0dde99e7b343fa01f8eefc378171fb8621bedb20f59157d6cc8e3d46c738105f",
     "zh:0ed12db90276ccd2d6f87135b7dd078657823c3ca33121c6a157d0bdf08f801e",
     "zh:160b32bcf1d01666784cf8469e10e0a38d4c3d24c80c0c5be470cc63ef27ea62",
