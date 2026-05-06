@@ -12,18 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-provider "stackit" {
-  default_region           = "eu01"
-  service_account_key_path = ""
-}
-
-provider "kubernetes" {
-  host                   = yamldecode(stackit_ske_kubeconfig.example.kube_config).clusters.0.cluster.server
-  client_certificate     = base64decode(yamldecode(stackit_ske_kubeconfig.example.kube_config).users.0.user.client-certificate-data)
-  client_key             = base64decode(yamldecode(stackit_ske_kubeconfig.example.kube_config).users.0.user.client-key-data)
-  cluster_ca_certificate = base64decode(yamldecode(stackit_ske_kubeconfig.example.kube_config).clusters.0.cluster.certificate-authority-data)
-}
-
 resource "stackit_ske_cluster" "default" {
   project_id             = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
   name                   = "ske-enc-vol"
