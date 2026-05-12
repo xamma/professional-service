@@ -56,7 +56,7 @@ variable "availability_zone" {
 variable "machine_type" {
   description = "Flavor of the machine"
   type        = string
-  default     = "g1.1"
+  default     = "c2i.1"
 }
 
 variable "image_id" {

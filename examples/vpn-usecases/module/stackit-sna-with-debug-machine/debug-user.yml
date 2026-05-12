@@ -1,0 +1,25 @@
+#cloud-config
+# ---------------------------------------------------------------------------
+# Example cloud-init for Linux instances (RHEL / Debian).
+# Creates a local admin user for initial access.
+#
+# IMPORTANT: Replace the password hash below with a hash of your own
+# secure password before deploying. Never use a shared or well-known
+# default password in production.
+#
+# Generate a SHA-512 hash on Linux/macOS:
+#   openssl passwd -6 "YourPassword"
+# ---------------------------------------------------------------------------
+users:
+  - name: debug
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    lock_passwd: false
+    # debug123
+    passwd: "$6$dIIA5b1oK7qi89.P$MH9SSMtnzCo8QvvUnVoCE5e1c7FY0NUgB4dpsv5JDq9zpRDiTpfiYtM5DitiJIuQWvZ7T1emTTgKaBufayaIW."
+
+chpasswd:
+  expire: false
+
+ssh_pwauth: true
