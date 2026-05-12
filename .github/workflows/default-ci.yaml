@@ -17,6 +17,23 @@ jobs:
       - name: TruffleHog Scan
         uses: edplato/trufflehog-actions-scan@master
 
+  todo-check:
+    name: "Check for Open TODOs"
+    runs-on: ${{ github.server_url == 'https://github.com' && 'ubuntu-latest' || 'stackit-ubuntu-22' }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Search codebase
+        run: |
+          # Searches recursively (-r), showing line numbers (-n), ignoring binary files (-I)
+          # Excludes the .git directory to prevent false positives
+          if grep -rnIE "# ?TODO" --exclude-dir=.git --exclude-dir=.github .; then
+            echo "Error: TODOs found in the codebase. Please resolve them before merging."
+            exit 1
+          fi
+          echo "No TODOs found. Proceeding."
+
   pre-commit-checks:
     name: "Pre-Commit Hooks"
     runs-on: ${{ github.server_url == 'https://github.com' && 'ubuntu-latest' || 'stackit-ubuntu-22' }}
