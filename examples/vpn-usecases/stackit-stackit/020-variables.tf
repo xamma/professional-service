@@ -26,3 +26,7 @@ variable "stackit_region" {
 variable "stackit_service_account_key_path" {
   type = string
 }
+
+variable "stackit_admin_email" {
+  type = string
+}

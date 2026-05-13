@@ -28,3 +28,7 @@ variable "stackit_service_account_key_path" {
 variable "azure_subscription_id" {
   type = string
 }
+
+variable "stackit_admin_email" {
+  type = string
+}
