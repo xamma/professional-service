@@ -34,3 +34,7 @@ variable "gcp_service_account_key_path" {
 variable "gcp_project" {
   type = string
 }
+
+variable "stackit_admin_email" {
+  type = string
+}
