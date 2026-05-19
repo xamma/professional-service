@@ -68,3 +68,6 @@ go.work.sum
 .idea
 ssh
 keys
+
+### K8s
+.kubeconfig
