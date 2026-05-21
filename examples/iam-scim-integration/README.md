@@ -76,6 +76,42 @@ Once STACKIT support processes your ticket, they will configure the trust relati
 
 ---
 
+## SKE Integration
+
+Once the IdP integration for SKE is enabled, you can create an IdP-based kubeconfig. Using this kubeconfig to interact with the Kubernetes API server will authenticate you via the STACKIT IdP, which is federated through your connected Authentik instance.
+
+For more details, see the [official STACKIT documentation](https://docs.stackit.cloud/products/runtime/kubernetes-engine/getting-started/access-cluster/#enable-idp-integration-in-cluster).
+
+### Step 1: Create IdP Kubeconfig
+
+Use the STACKIT CLI to create a kubeconfig that uses the IdP:
+
+```bash
+stackit ske kubeconfig create --project-id <your-project-id> <cluster-name> --idp
+```
+
+### Step 2: Switch Context
+
+Switch your `kubectl` context to the newly created IdP context:
+
+```bash
+kubectl config use-context <cluster-name>
+```
+
+### Step 3: Verify Identity
+
+Verify your identity using `kubectl auth whoami`:
+
+```bash
+kubectl auth whoami
+```
+
+![Terminal](docs/terminal-k-whoami.png)
+
+The Kubernetes API will return your username, UID, and groups. The Group ID should match the associated group from Authentik. You can confirm the group ID in the STACKIT Portal's Access Management UI:
+
+![SCIM-UI](docs/show-scim-group-id.png)
+
 ## Visual Verification
 
 ### 1. Dashboard/Application Overview
