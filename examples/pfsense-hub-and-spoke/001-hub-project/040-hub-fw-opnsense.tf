@@ -26,7 +26,7 @@ resource "null_resource" "opnsense_image_file" {
 
 # Upload VPN Appliance Image to STACKIT
 resource "stackit_image" "opnsense_image" {
-  project_id      = var.STACKIT_PROJECT_ID
+  project_id      = local.hub_project_id
   name            = "opnsense-26.1-amd64-image"
   local_file_path = "opnsense.qcow2"
   disk_format     = "qcow2"
