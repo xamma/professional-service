@@ -57,8 +57,8 @@ variable "mgmt_ip_range" {
   default     = ""
 }
 
-variable "pfsense_machine_type" {
-  description = "Machine type for the pfSense firewall (e.g. c2i.2, c2i.4)."
+variable "opnsense_machine_type" {
+  description = "Machine type for the OPNsense firewall (e.g. c2i.2, c2i.4)."
   type        = string
   default     = "c2i.2"
 }

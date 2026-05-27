@@ -1,8 +1,8 @@
-# Hub-and-Spoke VPN on STACKIT — pfSense Reference Implementation
+# Hub-and-Spoke VPN on STACKIT — OPNsense Reference Implementation
 
 A reference implementation of a **hub-and-spoke network topology** on [STACKIT](https://www.stackit.de/), provisioned with Terraform.
 
-The hub deploys a **pfSense firewall** as the central routing and security component. All spoke traffic is forwarded through pfSense for routing, NAT, and policy enforcement. Each project is a self-contained Terraform stack with independent state.
+The hub deploys an **OPNsense firewall** as the central routing and security component. All spoke traffic is forwarded through OPNsense for routing, NAT, and policy enforcement. Each project is a self-contained Terraform stack with independent state.
 
 ---
 
@@ -17,7 +17,7 @@ The hub deploys a **pfSense firewall** as the central routing and security compo
   |   +-------------------------------------------------------------+ |
   |   |                     001-hub-project                         | |
   |   |                                                             | |
-  |   |   pfSense Firewall                                          | |
+  |   |   OPNsense Firewall                                         | |
   |   |   +------------------+------------------+                   | |
   |   |   | Interface        | IP               |                   | |
   |   |   +------------------+------------------+                   | |
@@ -38,7 +38,7 @@ The hub deploys a **pfSense firewall** as the central routing and security compo
   +-------------------------------------------------------------------+
 ```
 
-**Traffic flow:** All spoke traffic (including internet-bound) is forwarded to the pfSense LAN NIC (`10.28.0.20`) via a routing table route attached to each spoke network. pfSense handles routing, NAT, and firewall policy centrally.
+**Traffic flow:** All spoke traffic (including internet-bound) is forwarded to the OPNsense LAN NIC (`10.28.0.20`) via a routing table route attached to each spoke network. OPNsense handles routing, NAT, and firewall policy centrally.
 
 ---
 
@@ -46,22 +46,22 @@ The hub deploys a **pfSense firewall** as the central routing and security compo
 
 ```
 hub-and-spoke-vpn/
-├── 001-hub-project/          # Hub: pfSense firewall, network area, routing tables
-│   ├── 000-backend.tf        # S3 remote state backend
-│   ├── 000-variables.tf      # Input variables (pfsense_machine_type, mgmt_ip_range)
-│   ├── 010-provider.tf       # STACKIT provider
-│   ├── 020-projects.tf       # STACKIT project + shared network area (SNA)
-│   ├── 030-network.tf        # Subnets, routing tables, NICs, security groups
-│   ├── 040-hub-fw-pfsense.tf # pfSense image, volume, server, public IPs
-│   ├── 050-outputs.tf        # network_area_id, firewall_lan_ip, public IPs (needed by spokes)
-│   └── backend.conf.example  # Backend credential template
+├── 001-hub-project/           # Hub: OPNsense firewall, network area, routing tables
+│   ├── 000-backend.tf         # S3 remote state backend
+│   ├── 000-variables.tf       # Input variables (opnsense_machine_type, mgmt_ip_range)
+│   ├── 010-provider.tf        # STACKIT provider
+│   ├── 020-projects.tf        # STACKIT project + shared network area (SNA)
+│   ├── 030-network.tf         # Subnets, routing tables, NICs, security groups
+│   ├── 040-hub-fw-opnsense.tf # OPNsense image, volume, server, public IPs
+│   ├── 050-outputs.tf         # network_area_id, firewall_lan_ip, public IPs (needed by spokes)
+│   └── backend.conf.example   # Backend credential template
 │
 ├── 002-spoke-project/        # Spoke A: example Linux servers (RHEL 9)
 │   ├── 000-backend.tf
 │   ├── 000-variables.tf
 │   ├── 010-provider.tf
 │   ├── 020-projects.tf
-│   ├── 030-network.tf        # Spoke subnet + routing table (default → pfSense LAN)
+│   ├── 030-network.tf        # Spoke subnet + routing table (default → OPNsense LAN)
 │   ├── 040-servers.tf        # Two Linux server examples (different machine types)
 │   ├── 050-outputs.tf
 │   └── backend.conf.example
@@ -161,7 +161,7 @@ The minimum required values are documented in each `000-variables.tf`.
 Deploy in numbered order. The hub creates the shared network area that spokes depend on.
 
 ```sh
-# Step 1 — Deploy the hub (creates the network area and the pfSense firewall)
+# Step 1 — Deploy the hub (creates the network area and the OPNsense firewall)
 cd 001-hub-project
 terraform init -backend-config=backend.conf
 terraform apply
@@ -182,9 +182,9 @@ terraform apply
 
 ---
 
-## Hub Firewall (pfSense)
+## Hub Firewall (OPNsense)
 
-pfSense is provisioned from a qcow2 image with three network interfaces:
+OPNsense is provisioned from a qcow2 image with three network interfaces:
 
 | Interface | Subnet          | IP           | Purpose                    |
 | --------- | --------------- | ------------ | -------------------------- |
@@ -194,7 +194,7 @@ pfSense is provisioned from a qcow2 image with three network interfaces:
 
 The WAN interface boots first (`vtnet0`); LAN and MGMT are attached sequentially and appear as `vtnet1` and `vtnet2`. The MGMT interface is protected by a security group that restricts SSH, HTTP, and HTTPS access to the CIDR set in `mgmt_ip_range`.
 
-**pfSense image:** Place `pfsense.qcow2` at `001-hub-project/image/pfsense.qcow2` before the first apply. Download pfSense 2.7.x AMD64 from netgate.com and convert to qcow2 if needed.
+**OPNsense image:** The image is downloaded automatically during `terraform apply` via a `null_resource` provisioner. The qcow2 image is fetched from the STACKIT Object Storage endpoint and uploaded to STACKIT as a custom image.
 
 ---
 
@@ -244,7 +244,6 @@ A single generic module used by all spokes. Select the OS by passing the appropr
 | Backend credentials       | `backend.conf` per project              | Object Storage bucket + S3 keys                         |
 | Service account key       | `keys/service-account.json` per project | Downloaded from STACKIT portal                          |
 | Cloud-init password       | `cloud-init/*.yml`                      | Replace placeholder hash with a real one                |
-| pfSense image             | `001-hub-project/image/pfsense.qcow2`   | Download separately                                     |
 
 ---
 
@@ -252,4 +251,4 @@ A single generic module used by all spokes. Select the OS by passing the appropr
 
 - [STACKIT Terraform Provider](https://registry.terraform.io/providers/stackitcloud/stackit/latest/docs)
 - [STACKIT Documentation](https://docs.stackit.cloud/)
-- [pfSense Documentation](https://docs.netgate.com/pfsense/en/latest/)
+- [OPNsense Documentation](https://docs.opnsense.org/)

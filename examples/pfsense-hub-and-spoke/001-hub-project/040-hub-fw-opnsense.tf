@@ -12,41 +12,52 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Place pfsense.qcow2 at ./image/pfsense.qcow2 before first apply.
-# Download pfSense 2.7.x AMD64 from netgate.com and convert to qcow2 if needed.
+resource "null_resource" "opnsense_image_file" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = "curl -o opnsense.qcow2 https://opnsense.object.storage.eu01.onstackit.cloud/opnsense-26.1-amd64-21-05-2026.qcow2"
+  }
+  lifecycle {
+    ignore_changes = all
+  }
+}
 
-resource "stackit_image" "pfsense_image" {
-  project_id      = local.hub_project_id
-  name            = "pfsense-2.7.x-amd64"
-  local_file_path = "./image/pfsense.qcow2"
+# Upload VPN Appliance Image to STACKIT
+resource "stackit_image" "opnsense_image" {
+  project_id      = var.STACKIT_PROJECT_ID
+  name            = "opnsense-26.1-amd64-image"
+  local_file_path = "opnsense.qcow2"
   disk_format     = "qcow2"
-  min_disk_size   = 10
+  depends_on      = [null_resource.opnsense_image_file]
+  min_disk_size   = 16
   min_ram         = 2
   config = {
     uefi = false
   }
 }
 
-resource "stackit_volume" "pfsense_volume" {
+resource "stackit_volume" "opnsense_volume" {
   project_id        = local.hub_project_id
-  name              = "pfsense-root"
+  name              = "opnsense-root"
   availability_zone = var.default_zone
   size              = 16
   performance_class = "storage_premium_perf4"
   source = {
-    id   = stackit_image.pfsense_image.image_id
+    id   = stackit_image.opnsense_image.image_id
     type = "image"
   }
 }
 
-resource "stackit_server" "pfsense" {
+resource "stackit_server" "opnsense" {
   project_id        = local.hub_project_id
-  name              = "pfsense"
+  name              = "opnsense"
   availability_zone = var.default_zone
-  machine_type      = var.pfsense_machine_type
+  machine_type      = var.opnsense_machine_type
   boot_volume = {
     source_type = "volume"
-    source_id   = stackit_volume.pfsense_volume.volume_id
+    source_id   = stackit_volume.opnsense_volume.volume_id
   }
   # WAN boots first (vtnet0); LAN and MGMT are attached in order below → vtnet1–2.
   network_interfaces = [stackit_network_interface.nic_wan.network_interface_id]
@@ -54,14 +65,14 @@ resource "stackit_server" "pfsense" {
 
 resource "stackit_server_network_interface_attach" "attach_lan" {
   project_id           = local.hub_project_id
-  server_id            = stackit_server.pfsense.server_id
+  server_id            = stackit_server.opnsense.server_id
   network_interface_id = stackit_network_interface.nic_lan.network_interface_id
-  depends_on           = [stackit_server.pfsense]
+  depends_on           = [stackit_server.opnsense]
 }
 
 resource "stackit_server_network_interface_attach" "attach_mgmt" {
   project_id           = local.hub_project_id
-  server_id            = stackit_server.pfsense.server_id
+  server_id            = stackit_server.opnsense.server_id
   network_interface_id = stackit_network_interface.nic_mgmt.network_interface_id
   depends_on           = [stackit_server_network_interface_attach.attach_lan]
 }
