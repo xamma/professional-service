@@ -63,7 +63,7 @@ variable "spoke_subnet" {
 }
 
 variable "hub_firewall_lan_ip" {
-  description = "LAN IP of the active pfSense node. Used as the default route next-hop for all spoke traffic. Run `terraform output firewall_lan_ip` in 001-hub-project."
+  description = "LAN IP of the active OPNsense node. Used as the default route next-hop for all spoke traffic. Run `terraform output firewall_lan_ip` in 001-hub-project."
   type        = string
   default     = "10.28.0.20"
 }

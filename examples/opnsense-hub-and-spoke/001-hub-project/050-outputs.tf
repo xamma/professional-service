@@ -23,16 +23,16 @@ output "hub_project_id" {
 }
 
 output "firewall_lan_ip" {
-  description = "pfSense LAN IP — set as hub_firewall_lan_ip in spoke terraform.tfvars."
+  description = "OPNsense LAN IP — set as hub_firewall_lan_ip in spoke terraform.tfvars."
   value       = stackit_network_interface.nic_lan.ipv4
 }
 
 output "wan_public_ip" {
-  description = "WAN public IP of the pfSense firewall."
+  description = "WAN public IP of the OPNsense firewall."
   value       = stackit_public_ip.wan_public_ip.ip
 }
 
 output "mgmt_public_ip" {
-  description = "Public IP of the pfSense MGMT interface. Access the web UI at https://<ip>/"
+  description = "Public IP of the OPNsense MGMT interface. Access the web UI at https://<ip>/"
   value       = stackit_public_ip.mgmt_public_ip.ip
 }

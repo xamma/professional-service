@@ -39,7 +39,7 @@ default_zone   = "eu01-1"
 
 # --- Hub: network access control (001-hub-project only) ----------------------
 
-# CIDR allowed to reach the pfSense management interface (SSH, HTTP, HTTPS).
+# CIDR allowed to reach the OPNsense management interface (SSH, HTTP, HTTPS).
 # Example: your office public IP or VPN exit in /32 or /24 notation.
 # Leave empty (or remove) to create no management access rules.
 # mgmt_ip_range = "<x.x.x.x/x>"
@@ -51,6 +51,6 @@ default_zone   = "eu01-1"
 # 003-spoke-project default: 10.28.2.0/28
 # spoke_subnet = "10.28.1.0/28"
 
-# LAN IP of the pfSense firewall — used as the default route next-hop for spoke traffic.
+# LAN IP of the OPNsense firewall — used as the default route next-hop for spoke traffic.
 # Run `terraform output firewall_lan_ip` in 001-hub-project.
 # hub_firewall_lan_ip = "10.28.0.20"

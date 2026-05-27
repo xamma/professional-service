@@ -19,17 +19,12 @@ variable "stackit_service_account_key_path" {
 }
 
 variable "stackit_organization_id" {
-  description = "STACKIT Organization ID (UUID)."
-  type        = string
-}
-
-variable "stackit_network_area_id" {
-  description = "Shared Network Area ID from the hub project. Run `terraform output network_area_id` in 001-hub-project."
+  description = "STACKIT Organization ID (UUID). Found in the portal under Organization > Settings."
   type        = string
 }
 
 variable "stackit_folder_id" {
-  description = "STACKIT Folder ID (UUID) that will contain this spoke project."
+  description = "STACKIT Folder ID (UUID) that will contain the hub project."
   type        = string
 }
 
@@ -46,9 +41,9 @@ variable "default_zone" {
 }
 
 variable "project_name" {
-  description = "Display name of this spoke project in STACKIT."
+  description = "Display name of the hub project in STACKIT."
   type        = string
-  default     = "spoke-project-03"
+  default     = "hub-project"
 }
 
 variable "org_admin" {
@@ -56,14 +51,14 @@ variable "org_admin" {
   type        = string
 }
 
-variable "spoke_subnet" {
-  description = "IPv4 prefix for this spoke's network. Must be within the network area range (10.28.0.0/16)."
+variable "mgmt_ip_range" {
+  description = "CIDR range allowed to access the firewall management interface (SSH, HTTP, HTTPS). Example: your office or VPN exit IP in /32 or /24 notation."
   type        = string
-  default     = "10.28.2.0/28"
+  default     = ""
 }
 
-variable "hub_firewall_lan_ip" {
-  description = "LAN IP of the active pfSense node. Used as the default route next-hop for all spoke traffic. Run `terraform output firewall_lan_ip` in 001-hub-project."
+variable "opnsense_machine_type" {
+  description = "Machine type for the OPNsense firewall (e.g. c2i.2, c2i.4)."
   type        = string
-  default     = "10.28.0.20"
+  default     = "c2i.2"
 }
