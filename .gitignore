@@ -1,4 +1,4 @@
-### Terraform template
+.### Terraform template
 # Local .terraform directories
 **/.terraform/*
 
@@ -71,3 +71,4 @@ keys
 
 ### K8s
 .kubeconfig
+/examples/telemetry-router-hub-spoke-setup/scripts/downloads/
