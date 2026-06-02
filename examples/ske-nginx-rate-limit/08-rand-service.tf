@@ -44,7 +44,7 @@ resource "kubernetes_deployment_v1" "random_nginx" {
   }
 }
 
-resource "kubernetes_service" "nginx" {
+resource "kubernetes_service_v1" "nginx" {
   metadata {
     name = "nginx-${random_pet.suffix.id}"
   }
@@ -78,7 +78,7 @@ resource "kubernetes_ingress_v1" "nginx" {
           path_type = "Prefix"
           backend {
             service {
-              name = kubernetes_service.nginx.metadata[0].name
+              name = kubernetes_service_v1.nginx.metadata[0].name
               port {
                 number = 80
               }
