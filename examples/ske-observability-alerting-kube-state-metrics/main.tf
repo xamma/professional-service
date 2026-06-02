@@ -48,8 +48,7 @@ locals {
   alert_config = {
     route = {
       receiver        = "EmailStackit",
-      repeat_interval = "1m",
-      continue        = true
+      repeat_interval = "1m"
     }
     receivers = [
       {
