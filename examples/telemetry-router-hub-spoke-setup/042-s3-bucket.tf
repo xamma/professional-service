@@ -12,19 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Create an S3 Bucket for log archiving
-resource "stackit_objectstorage_bucket" "log_archive" {
+# Enable Project-level Compliance Lock (required for WORM / Object Lock)
+resource "stackit_objectstorage_compliance_lock" "hub_lock" {
   project_id = stackit_resourcemanager_project.telemetry_hub.project_id
-  name       = "telemetry-log-archive"
+}
+
+# Create an S3 Bucket with Object Lock enabled for immutable log archiving (WORM)
+resource "stackit_objectstorage_bucket" "log_archive" {
+  project_id  = stackit_resourcemanager_project.telemetry_hub.project_id
+  name        = "telemetry-immutable-archive"
+  object_lock = true
+
+  # Ensure the compliance lock is active before creating the bucket with object lock
+  depends_on = [stackit_objectstorage_compliance_lock.hub_lock]
 }
 
 # Create a Credentials Group for Object Storage
 resource "stackit_objectstorage_credentials_group" "router_group" {
   project_id = stackit_resourcemanager_project.telemetry_hub.project_id
   name       = "router-s3-group"
-  depends_on = [stackit_objectstorage_bucket.log_archive]
 }
-
 
 # Create Credentials for the Telemetry Router to access the bucket
 resource "stackit_objectstorage_credential" "router_s3_creds" {

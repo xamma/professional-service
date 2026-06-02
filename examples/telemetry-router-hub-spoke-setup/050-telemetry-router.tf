@@ -69,11 +69,12 @@ resource "stackit_telemetryrouter_destination" "logs_destination" {
   }
 }
 
-# Create a Destination for the Router to archive all data in S3
-resource "stackit_telemetryrouter_destination" "s3_archive" {
+# Create an Immutable S3 Archive Destination (Compliance Usecase)
+# This destination points to a WORM-enabled bucket for tamper-proof long-term storage
+resource "stackit_telemetryrouter_destination" "immutable_archive" {
   project_id   = stackit_resourcemanager_project.telemetry_hub.project_id
   instance_id  = stackit_telemetryrouter_instance.hub_router.instance_id
-  display_name = "s3-log-archive"
+  display_name = "immutable-audit-archive"
   config = {
     config_type = "S3"
     s3 = {
