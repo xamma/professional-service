@@ -31,8 +31,8 @@ provider "stackit" {
 }
 
 provider "kubernetes" {
-  host                   = yamldecode(stackit_ske_kubeconfig.example.kube_config).clusters.0.cluster.server
-  client_certificate     = base64decode(yamldecode(stackit_ske_kubeconfig.example.kube_config).users.0.user.client-certificate-data)
-  client_key             = base64decode(yamldecode(stackit_ske_kubeconfig.example.kube_config).users.0.user.client-key-data)
-  cluster_ca_certificate = base64decode(yamldecode(stackit_ske_kubeconfig.example.kube_config).clusters.0.cluster.certificate-authority-data)
+  host                   = yamldecode(stackit_ske_kubeconfig.default.kube_config).clusters.0.cluster.server
+  client_certificate     = base64decode(yamldecode(stackit_ske_kubeconfig.default.kube_config).users.0.user.client-certificate-data)
+  client_key             = base64decode(yamldecode(stackit_ske_kubeconfig.default.kube_config).users.0.user.client-key-data)
+  cluster_ca_certificate = base64decode(yamldecode(stackit_ske_kubeconfig.default.kube_config).clusters.0.cluster.certificate-authority-data)
 }
