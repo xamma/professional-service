@@ -53,7 +53,7 @@ resource "stackit_objectstorage_credential" "example" {
 provider "aws" {
   region     = "eu01"
   access_key = stackit_objectstorage_credential.example.access_key
-  secret_key = stackit_objectstorage_credential.example.secret_key
+  secret_key = stackit_objectstorage_credential.example.secret_access_key
 
   # These flags are mandatory when connecting to a custom S3-compatible backend
   skip_credentials_validation = true
