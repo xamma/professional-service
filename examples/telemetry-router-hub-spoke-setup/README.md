@@ -2,8 +2,12 @@
 
 This example demonstrates how to use the **STACKIT Telemetry Router** to centralize observability data across multiple projects, folders, and even the entire organization.
 
-> ⚠️⚠️⚠️ **A Telemetry Router DOES NOT replace a Telemetry Link.** ⚠️⚠️⚠️\
+> ⚠️⚠️⚠️\
+> **1. A Telemetry Router DOES NOT replace a Telemetry Link.**
 > Creating a Router in a project only provides the ingestion endpoint. To actually forward logs from that same project (or any other project) to the router, you **MUST** create an explicit `stackit_telemetrylink`. Every project in your hierarchy requires its own link to participate in the telemetry routing.
+>
+> **2. Current Scope: Audit Logs Only.**
+> In its current state, the Telemetry Router supports **Audit Logs** only. Ingesting logs from other services (e.g., managed databases like Postgres or MongoDB) is currently Work-in-Progress (WIP). This example will be updated as soon as these features become available.
 
 ## Architecture Overview
 
@@ -20,7 +24,7 @@ graph TD
                 HubLink([Link: hub-to-hub-link])
                 Obs[Observability Instance]
                 Logs[Logs Instance]
-                S3[S3 Log Archive]
+                S3[Immutable S3 Archive]
 
                 Router -->|OTLP| Obs
                 Router -->|OTLP| Logs
@@ -42,12 +46,12 @@ graph TD
     end
 
     %% Connections from Links to Router
-    OrgLink -.->|Forward Organization Logs| Router
-    FolderLink -.->|Forward Folder Logs| Router
-    HubLink -.->|Forward Hub Logs| Router
-    Link1 -.->|Forward Spoke Logs| Router
-    Link2 -.->|Forward Spoke Logs| Router
-    Link3 -.->|Forward Spoke Logs| Router
+    OrgLink -.->|Forward Organization Audit Logs| Router
+    FolderLink -.->|Forward Folder Audit Logs| Router
+    HubLink -.->|Forward Hub Audit Logs| Router
+    Link1 -.->|Forward Spoke Audit Logs| Router
+    Link2 -.->|Forward Spoke Audit Logs| Router
+    Link3 -.->|Forward Spoke Audit Logs| Router
 
     style Router fill:#f9f,stroke:#333,stroke-width:4px
     style OrgLink fill:#bbf,stroke:#333
@@ -61,25 +65,29 @@ graph TD
 ## What this setup does
 
 1.  **Centralizes Telemetry**: Creates a **Hub Project** that hosts a central Telemetry Router instance.
-2.  **Connects the Hierarchy**: Uses **Telemetry Links** at three different levels:
-    - **Organization Level**: Forwards organization-wide audit logs to the central router.
-    - **Folder Level**: Ensures all telemetry from a specific folder and its sub-projects is routed to the Hub.
-    - **Project Level**: Connects individual "Spoke" projects and the **Hub Project itself** to the Router.
+2.  **Connects the Hierarchy**: Uses **Telemetry Links** at three different levels (Organization, Folder, Project).
 3.  **Broadcasts & Filters Data**:
     - **Observability Destination**: All data is sent to a `stackit_observability_instance`.
     - **Logs Destination (Filtered)**: Only logs from the **`service-account`** service are forwarded to the `stackit_logs_instance`. This demonstrates how to filter for specific high-value audit trails (like IAM actions).
-    - **S3 Archiving**: All data is also archived in a **STACKIT Object Storage (S3)** bucket for long-term retention.
-4.  **Generates Continuous Logs**: To demonstrate the setup, this example includes a **Log Generator** (`070-log-generator.tf`). It creates S3 credentials in every project and rotates them **every minute**. These frequent administrative actions trigger continuous Audit Logs, which you should see appearing in your Observability and Logs instances.
-5.  **Handles Authentication**:
-    - Uses a **Router Access Token** for the links to connect.
-    - Uses **Credentials/Access Tokens** for the router to push data to the backend Observability and Logs instances via OTLP.
+    - **Immutable S3 Archive (Compliance)**: All data is archived in a **WORM-protected STACKIT Object Storage (S3)** bucket. This meets organizational requirements for tamper-proof, long-term storage of audit logs where data cannot be edited or deleted.
+4.  **Generates Continuous Logs**: Demonstrates the setup with a **Log Generator** that rotates credentials every minute to trigger continuous Audit Logs.
+5.  **Handles Authentication**: Manages Router Access Tokens and Backend Credentials (OTLP/S3).
 
-## Resource Architecture
+## Compliance & Security (WORM Protection)
 
-- **1 Organization**: Linked via an Org-level Telemetry Link.
-- **1 Folder**: Contains all projects and is linked via a Folder-level Link.
-- **1 Hub Project**: Contains the Router, Observability, Logs, and S3 Bucket instances. **⚠️⚠️⚠️ Crucially, it is also linked to its own Router.⚠️⚠️⚠️**
-- **3 Spoke Projects**: Connected to the Hub via individual Project-level Links.
+This example implements a "Write Once Read Many" (WORM) strategy for log archiving:
+
+- **Compliance Lock**: Enabled at the project level.
+- **Object Lock**: Enabled on the S3 bucket (`042-s3-bucket.tf`).
+- **Immutable Destination**: The router destination `immutable-audit-archive` ensures every log entry received is stored in this protected bucket, satisfying legal and internal auditing requirements.
+
+## Resource Architecture Summary
+
+- **Organization Level**: 1 Link for org-wide audit logs.
+- **Folder Level**: 1 Link for folder-wide audit logs.
+- **Project Level**:
+  - **Hub Project**: 1 Router + 1 Link (mandatory to ingest hub-specific logs).
+  - **Spoke Projects**: 3 Projects, each with its own individual Link.
 
 ## How to use
 
@@ -89,21 +97,19 @@ graph TD
     terraform init
     terraform apply
     ```
-3.  Check the **outputs** for the Router URI and all Link IDs (Org, Folder, and Projects) to verify the connection.
+3.  Check the **outputs** for the Router URI and all Link IDs to verify the connection.
 
 ## Post-Deployment: Monitoring & Retrieval
 
-To avoid external dependencies during deployment, all scripts are located in the `scripts/` directory and should be run manually from within this folder.
+Auxiliary scripts are located in the `scripts/` directory.
 
 ### Monitoring S3 Archive
 
-To check how many log objects are currently archived in S3:
+To check how many log objects (compressed) are currently archived in S3:
 
 ```bash
 ./scripts/count-s3-items.sh
 ```
-
-This script retrieves the necessary credentials from the Terraform state and uses the AWS CLI to count the objects.
 
 ### Log Retrieval, Extraction & Beautification
 
@@ -112,15 +118,3 @@ To download, automatically unzip, and beautify all archived logs from S3:
 ```bash
 ./scripts/download-s3-logs.sh
 ```
-
-The script will:
-
-1. Download all logs from S3.
-2. Unzip all `.gz` files.
-3. Format all JSON files for better readability (using `jq`).
-
-The logs will be saved in the `scripts/downloads/` directory (which is ignored by Git).
-
----
-
-_Note: This service is currently in beta. `enable_beta_resources = true` is required in the provider configuration._
