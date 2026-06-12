@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nginx-tls
+  namespace: nginx-showcase
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/instance: nginx-showcase
+    app.kubernetes.io/part-of: alb-k8s-showcase
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/component: cert-manager
+spec:
+  secretName: nginx-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "nginx.alb-k8s-showcase.stackit.gg"
+  duration: 2160h0m0s
+  renewBefore: 720h0m0s
+  dnsNames:
+    - "nginx.alb-k8s-showcase.stackit.gg"

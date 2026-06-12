@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  namespace: nginx-showcase
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/instance: nginx-showcase
+    app.kubernetes.io/part-of: alb-k8s-showcase
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: "nginx.alb-k8s-showcase.stackit.gg"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - "nginx.alb-k8s-showcase.stackit.gg"
+      secretName: nginx-tls

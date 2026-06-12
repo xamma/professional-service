@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-showcase
+  labels:
+    app.kubernetes.io/part-of: alb-k8s-showcase
+    app.kubernetes.io/managed-by: kubectl
