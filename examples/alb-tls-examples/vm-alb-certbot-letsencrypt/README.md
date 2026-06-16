@@ -8,14 +8,14 @@ Infrastructure-as-Code workshop environment demonstrating automated TLS certific
 
 This repository provisions a fully reproducible demo environment on STACKIT using Terraform. It covers the complete path from infrastructure provisioning to automated certificate management.
 
-| Component              | Description                                                                                                         |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Resource hierarchy     | Folder and project under an existing STACKIT organisation                                                           |
-| Network                | Private routed network (`10.10.0.0/24`) with security groups                                                        |
-| Compute                | Debian 12 VM with Docker Engine (provisioned via cloud-init)                                                        |
-| DNS                    | Primary zone for ACME DNS-01 challenge validation                                                                   |
-| Load Balancer          | Application Load Balancer with HTTP and HTTPS listeners                                                             |
-| Certificate automation | [vm-alb-certbot-letsencrypt](vm-alb-certbot-letsencrypt/readme.md) — PowerShell/certbot container running on the VM |
+| Component              | Description                                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| Resource hierarchy     | Folder and project under an existing STACKIT organisation                                                 |
+| Network                | Private routed network (`10.10.0.0/24`) with security groups                                              |
+| Compute                | Debian 12 VM with Docker Engine (provisioned via cloud-init)                                              |
+| DNS                    | Primary zone for ACME DNS-01 challenge validation                                                         |
+| Load Balancer          | Application Load Balancer with HTTP and HTTPS listeners                                                   |
+| Certificate automation | [vm-alb-certbot-letsencrypt](stackit-acme-alb/README.md) — PowerShell/certbot container running on the VM |
 
 ---
 

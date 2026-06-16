@@ -1,5 +1,5 @@
-bucket = "tfstatealbworkshop"
-key    = "alb-k8s/terraform.tfstate"
+bucket = ""
+key    = ""
 region = "eu01"
 
 endpoints = {
