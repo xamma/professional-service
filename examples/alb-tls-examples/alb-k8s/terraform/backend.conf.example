@@ -1,0 +1,15 @@
+bucket = ""
+key    = ""
+region = "eu01"
+
+endpoints = {
+  s3 = "https://object.storage.eu01.onstackit.cloud"
+}
+
+access_key = ""
+secret_key = ""
+
+skip_credentials_validation = true
+skip_region_validation      = true
+skip_requesting_account_id  = true
+skip_s3_checksum            = true

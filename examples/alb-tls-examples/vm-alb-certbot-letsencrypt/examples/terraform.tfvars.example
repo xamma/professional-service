@@ -1,0 +1,51 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored — never commit real values.
+
+# ─── Provider ─────────────────────────────────────────────────────────────────
+
+stackit_region                   = "eu01"
+stackit_service_account_key_path = "keys/sa-key.json"
+
+# ─── Resource Hierarchy ───────────────────────────────────────────────────────
+
+# Find your Organisation ID in the STACKIT Portal → Organisation → Settings
+organization_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+owner_email  = "your.name@example.com"
+folder_name  = "alb-certbot-workshop"
+project_name = "alb-certbot-dev"
+
+# ─── Network ──────────────────────────────────────────────────────────────────
+
+network_name = "alb-certbot-net"
+network_cidr = "10.10.0.0/24"
+
+# Restrict SSH to your IP — never use 0.0.0.0/0 in production
+# Find your IP: curl -s https://ifconfig.schwarz
+admin_cidr = "203.0.113.10/32"
+
+# ─── Compute / VM ─────────────────────────────────────────────────────────────
+
+vm_name           = "alb-certbot-docker-host"
+availability_zone = "eu01-1"
+
+# List available machine types:
+# stackit server machine-type list --project-id <id>
+machine_type = "g1.1"
+
+# List available images (Debian 12 recommended):
+# stackit image list --all --project-id <id>
+image_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+boot_volume_size_gb = 32
+
+keypair_name   = "alb-certbot-workshop-key"
+ssh_public_key = "ssh-ed25519 AAAA... your-key-comment"
+
+start_nginx_test_container = true
+
+# ─── DNS ──────────────────────────────────────────────────────────────────────
+
+dns_zone_name     = "alb-certbot-workshop-zone"
+dns_name          = "workshop.example.com"
+dns_contact_email = "your.name@example.com"

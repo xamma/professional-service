@@ -1,0 +1,52 @@
+# Copy this file to terraform.tfvars and fill in the required values.
+# terraform.tfvars is gitignored — never commit real credentials or IDs.
+
+# ─── Provider ─────────────────────────────────────────────────────────────────
+
+stackit_region                   = "eu01"
+stackit_service_account_key_path = "keys/sa-key.json"
+
+# ─── Project ──────────────────────────────────────────────────────────────────
+
+# Find your project ID in the STACKIT Portal or via: stackit project list
+project_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# ─── Naming ───────────────────────────────────────────────────────────────────
+
+name_prefix = "vm-alb-tls"
+
+# ─── Network ──────────────────────────────────────────────────────────────────
+
+network_cidr = "10.10.0.0/24"
+
+# Restrict SSH to your IP — never use 0.0.0.0/0 in production
+# Find your IP: curl -s https://ifconfig.schwarz
+admin_cidr = "203.0.113.10/32"
+
+# ─── Compute / VM ─────────────────────────────────────────────────────────────
+
+machine_type      = "g1.1"
+availability_zone = "eu01-1"
+
+# List available Debian 12 images:
+#   stackit image list --all --project-id <project-id>
+image_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+boot_volume_size_gb = 20
+keypair_name        = "vm-alb-tls-key"
+
+# Paste your SSH public key here (never the private key)
+ssh_public_key = "ssh-ed25519 AAAA... your-key-comment"
+
+# ─── TLS / Certificate ────────────────────────────────────────────────────────
+
+# Use the ALB public IP or a hostname you control.
+# A self-signed cert on an IP address is fully valid for testing.
+tls_common_name    = "alb.example.internal"
+tls_organization   = "STACKIT ALB Showcase"
+tls_validity_hours = 8760 # 1 year
+
+# ─── ALB ──────────────────────────────────────────────────────────────────────
+
+alb_plan_id    = "p10"
+alb_acl_ranges = ["0.0.0.0/0"]

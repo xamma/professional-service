@@ -1,0 +1,32 @@
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/*.tfstate*
+terraform/*.tfvars
+terraform/backend.conf
+
+# Kubeconfig (contains cluster credentials)
+.kubeconfig
+kubeconfig
+*.kubeconfig
+
+# STACKIT Service Account Keys (sensitive)
+keys/
+secrets/
+sa.json
+*.sa.json
+
+# Local environment files
+.env
+.env.local
+
+# macOS
+.DS_Store
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
